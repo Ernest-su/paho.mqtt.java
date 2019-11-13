@@ -102,7 +102,7 @@ public class MqttAsyncClient implements IMqttAsyncClient { // DestinationProvide
 	private Timer reconnectTimer; // Automatic reconnect timer
 	private static int reconnectDelay = 1000;  // Reconnect delay, starts at 1 second
 	private boolean reconnecting = false;
-	
+	private static final Object clientLock = new Object(); // Simple lock
 
 
 
@@ -1117,8 +1117,15 @@ public class MqttAsyncClient implements IMqttAsyncClient { // DestinationProvide
 		String methodName = "stopReconnectCycle";
 		//@Trace 504=Stop reconnect timer for client: {0}
 		log.fine(CLASS_NAME, methodName, "504", new Object[]{this.clientId});
-		reconnectTimer.cancel();
-		reconnectDelay = 1000; // Reset Delay Timer
+		synchronized (clientLock) {
+			if (this.connOpts.isAutomaticReconnect()) {
+				if (reconnectTimer != null) {
+					reconnectTimer.cancel();
+					reconnectTimer = null;
+				}
+				reconnectDelay = 1000; // Reset Delay Timer
+			}
+		}
 		
 	}
 	
