@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.github.Ernest-su</groupId>
 		<artifactId>java-parent</artifactId>
-		<version>v1.1.0_fix_3</version>
+		<version>1.1.0.3</version>
 	</parent>
 
 	<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
